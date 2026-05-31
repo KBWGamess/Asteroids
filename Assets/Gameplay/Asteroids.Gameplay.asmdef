@@ -1,0 +1,22 @@
+{
+    "name": "Asteroids.Gameplay",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d498cea4174668340b717384d636776f",
+        "GUID:ef989316b87b98448b43fb503fbdf8b4",
+        "GUID:2207a34efa80fbb44a44dbfe724005bc",
+        "GUID:3112a8a85e2c5a24c9eb5f651ac15053",
+        "GUID:376f5188a86f0cd4d8b48d43c9f1bc74",
+        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4",
+        "GUID:c8d850296ba7af4418fa26791e261529"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

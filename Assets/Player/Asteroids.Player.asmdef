@@ -1,0 +1,19 @@
+{
+    "name": "Asteroids.Player",
+    "rootNamespace": "",
+    "references": [
+        "GUID:376f5188a86f0cd4d8b48d43c9f1bc74",
+        "GUID:c8d850296ba7af4418fa26791e261529",
+        "GUID:3112a8a85e2c5a24c9eb5f651ac15053",
+        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

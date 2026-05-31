@@ -1,3 +1,12 @@
 ﻿{
-
+  "moveSpeed": 5,
+  "rotationSpeed": 180,
+  "drag": 0.98,
+  "maxSpeed": 10,
+  "maxHealth": 3,
+  "bulletSpeed": 15,
+  "fireRate": 0.2,
+  "maxLaserCharges": 3,
+  "laserRechargeTime": 5,
+  "invincibilityDuration": 3
 }

@@ -1,3 +1,6 @@
 ﻿{
-
+  "asteroidSpeed": 3,
+  "ufoSpeed": 2,
+  "maxEnemiesOnMap": 10,
+  "spawnInterval": 2
 }
