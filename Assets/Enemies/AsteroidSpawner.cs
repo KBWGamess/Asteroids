@@ -1,28 +1,24 @@
+using Asteroids.Core;
 using Asteroids.Infrastructure;
-using UnityEngine;
-using Zenject;
 using Cysharp.Threading.Tasks;
 using System.Threading;
-using Asteroids.Core;
+using UnityEngine;
 
 namespace Asteroids.Enemies
 {
     public class AsteroidSpawner
     {
-        private readonly ObjectPool<AsteroidView> _pool;
-        private readonly WorldBounds _bounds;
+        private readonly IEnemyFactory _factory;
         private readonly EnemyConfig _config;
         private readonly WorldConfig _worldConfig;
         private CancellationTokenSource _cts;
 
         public AsteroidSpawner(
-            ObjectPool<AsteroidView> pool,
-            WorldBounds bounds,
+            IEnemyFactory factory,
             EnemyConfig config,
             WorldConfig worldConfig)
         {
-            _pool = pool;
-            _bounds = bounds;
+            _factory = factory;
             _config = config;
             _worldConfig = worldConfig;
         }
@@ -49,8 +45,6 @@ namespace Asteroids.Enemies
 
         private void SpawnAsteroid()
         {
-            if (_pool.GetActive().Count >= _config.maxEnemiesOnMap) return;
-            
             float hw = _worldConfig.worldWidth / 2f;
             float hh = _worldConfig.worldHeight / 2f;
 
@@ -60,13 +54,7 @@ namespace Asteroids.Enemies
                 Random.Range(-1f, 1f)
             ).normalized;
 
-            AsteroidView view = _pool.Get();
-            AsteroidModel model = new AsteroidModel(
-                position, direction,
-                _config.asteroidSpeed,
-                AsteroidSize.Large
-            );
-            view.Init(model, _bounds);
+            _factory.CreateAsteroid(position, direction, _config.asteroidSpeed);
         }
 
         private Vector2 GetSpawnPosition(float hw, float hh)

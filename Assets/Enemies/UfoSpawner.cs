@@ -9,25 +9,22 @@ namespace Asteroids.Enemies
 {
     public class UfoSpawner
     {
+        private readonly IEnemyFactory _factory;
         private readonly ObjectPool<UfoView> _pool;
-        private readonly WorldBounds _bounds;
         private readonly EnemyConfig _config;
         private readonly WorldConfig _worldConfig;
-        private readonly PlayerModel _player;
         private CancellationTokenSource _cts;
 
         public UfoSpawner(
+            IEnemyFactory factory,
             ObjectPool<UfoView> pool,
-            WorldBounds bounds,
             EnemyConfig config,
-            WorldConfig worldConfig,
-            PlayerModel player)
+            WorldConfig worldConfig)
         {
+            _factory = factory;
             _pool = pool;
-            _bounds = bounds;
             _config = config;
             _worldConfig = worldConfig;
-            _player = player;
         }
 
         public void StartSpawning()
@@ -65,9 +62,7 @@ namespace Asteroids.Enemies
                 _ => new Vector2(-hw, Random.Range(-hh, hh))
             };
 
-            UfoView view = _pool.Get();
-            UfoModel model = new UfoModel(position, _config.ufoSpeed);
-            view.Init(model, _bounds);
+            _factory.CreateUfo(position, _config.ufoSpeed);
         }
 
         public void Tick(Vector2 playerPosition)

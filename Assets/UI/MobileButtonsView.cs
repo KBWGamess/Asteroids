@@ -20,6 +20,12 @@ namespace Asteroids.UI
 
         private void Start()
         {
+            if (_mobileInput == null)
+            {
+                Debug.LogError("MobileInput is null!");
+                return;
+            }
+
             var fireTrigger = _fireButton.gameObject.AddComponent<HoldButton>();
             fireTrigger.OnHold += () => _mobileInput.SetFire(true);
             fireTrigger.OnRelease += () => _mobileInput.SetFire(false);

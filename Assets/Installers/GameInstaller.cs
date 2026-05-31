@@ -46,13 +46,15 @@ namespace Asteroids.Infrastructure
             
             Container.Bind<PlayerModel>().AsSingle();
 
+            Container.Bind<KeyboardInput>().AsSingle();
+            Container.Bind<MouseInput>().AsSingle();
             Container.Bind<MobileInput>().FromComponentInHierarchy().AsSingle();
-            
-            #if UNITY_ANDROID || UNITY_IOS
+
+#if UNITY_ANDROID || UNITY_IOS
             Container.Bind<IInputHandler>().To<MobileInput>().FromComponentInHierarchy().AsSingle();
-            #else
-            Container.Bind<IInputHandler>().To<KeyboardInput>().AsSingle();
-            #endif
+#else
+            Container.Bind<IInputHandler>().To<CombinedInput>().AsSingle();
+#endif
 
             Container.BindInterfacesAndSelfTo<PlayerController>().AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerView>().FromComponentInHierarchy().AsSingle();
@@ -98,8 +100,8 @@ namespace Asteroids.Infrastructure
                 .AsSingle();
             
             Container.Bind<FirebaseAnalyticsService>().AsSingle();
-            
             Container.Bind<IAdProvider>().To<MockAdProvider>().AsSingle();
+            Container.Bind<IEnemyFactory>().To<EnemyFactory>().AsSingle();
         }
     }
 }

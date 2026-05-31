@@ -1,0 +1,38 @@
+using Asteroids.Core;
+using Asteroids.Enemies;
+using Asteroids.Infrastructure;
+using UnityEngine;
+
+namespace Asteroids.Gameplay
+{
+    public class EnemyFactory : IEnemyFactory
+    {
+        private readonly ObjectPool<AsteroidView> _asteroidPool;
+        private readonly ObjectPool<UfoView> _ufoPool;
+        private readonly WorldBounds _bounds;
+
+        public EnemyFactory(
+            ObjectPool<AsteroidView> asteroidPool,
+            ObjectPool<UfoView> ufoPool,
+            WorldBounds bounds)
+        {
+            _asteroidPool = asteroidPool;
+            _ufoPool = ufoPool;
+            _bounds = bounds;
+        }
+
+        public void CreateAsteroid(Vector2 position, Vector2 direction, float speed)
+        {
+            AsteroidView view = _asteroidPool.Get();
+            AsteroidModel model = new AsteroidModel(position, direction, speed, AsteroidSize.Large);
+            view.Init(model, _bounds);
+        }
+
+        public void CreateUfo(Vector2 position, float speed)
+        {
+            UfoView view = _ufoPool.Get();
+            UfoModel model = new UfoModel(position, speed);
+            view.Init(model, _bounds);
+        }
+    }
+}

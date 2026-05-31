@@ -13,15 +13,17 @@ namespace Asteroids.Weapons
         private readonly float _bulletSpeed;
         private float _fireCooldown;
         private readonly float _fireRate;
+        private readonly IInputHandler _input;
 
         public WeaponController(PlayerModel player, ObjectPool<BulletView> bulletPool,
-            PlayerConfig config, LaserView laserView)
+            PlayerConfig config, LaserView laserView, IInputHandler input)
         {
             _player = player;
             _bulletPool = bulletPool;
             _bulletSpeed = config.bulletSpeed;
             _fireRate = config.fireRate;
             _laserView = laserView;
+            _input = input;
         }
 
         public void Tick()
@@ -29,10 +31,10 @@ namespace Asteroids.Weapons
             if (_fireCooldown > 0)
                 _fireCooldown -= Time.deltaTime;
 
-            if (Input.GetKey(KeyCode.Space) && _fireCooldown <= 0)
+            if (_input.Fire && _fireCooldown <= 0)
                 Shoot();
 
-            if (Input.GetKeyDown(KeyCode.E))
+            if (_input.Laser)
                 _laserView.Fire();
         }
 

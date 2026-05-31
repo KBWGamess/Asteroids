@@ -6312,6 +6312,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1141220865}
   - component: {fileID: 1141220864}
+  - component: {fileID: 1141220866}
   m_Layer: 0
   m_Name: MobileInput
   m_TagString: Untagged
@@ -6346,6 +6347,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1141220866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1141220863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cd36859b5fc73e4aa2e16d40375be91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _fireButton: {fileID: 302472878}
+  _laserButton: {fileID: 1713905128}
 --- !u!1 &1246754454
 GameObject:
   m_ObjectHideFlags: 0
@@ -7366,7 +7381,7 @@ SceneRoots:
   - {fileID: 2003273433}
   - {fileID: 1408146014}
   - {fileID: 1771667120}
+  - {fileID: 1141220865}
   - {fileID: 659546103}
   - {fileID: 1995883208}
   - {fileID: 183715910}
-  - {fileID: 1141220865}
