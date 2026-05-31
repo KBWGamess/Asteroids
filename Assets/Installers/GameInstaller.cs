@@ -102,6 +102,8 @@ namespace Asteroids.Infrastructure
             Container.Bind<FirebaseAnalyticsService>().AsSingle();
             Container.Bind<IAdProvider>().To<MockAdProvider>().AsSingle();
             Container.Bind<IEnemyFactory>().To<EnemyFactory>().AsSingle();
+            
+            Container.Bind<EnemyRegistry>().AsSingle();
         }
     }
 }

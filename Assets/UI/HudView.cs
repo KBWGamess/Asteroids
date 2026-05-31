@@ -24,6 +24,12 @@ namespace Asteroids.UI
 
         private void Update()
         {
+            if (_viewModel == null)
+            {
+                Debug.LogError("ViewModel is null!");
+                return;
+            }
+            
             _coordinates.text = _viewModel.Coordinates;
             _angle.text = _viewModel.Angle;
             _speed.text = _viewModel.Speed;
