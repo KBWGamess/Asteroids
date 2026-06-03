@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 namespace Asteroids.Infrastructure
 {
@@ -7,10 +8,17 @@ namespace Asteroids.Infrastructure
     {
         private readonly T _prefab;
         private readonly List<T> _pool = new List<T>();
+        private readonly List<T> _activeCache = new List<T>();
+        private readonly DiContainer _container;
+        private readonly Transform _poolContainer;
 
-        public ObjectPool(T prefab)
+        public ObjectPool(T prefab, DiContainer container)
         {
             _prefab = prefab;
+            _container = container;
+            
+            GameObject containerGO = new GameObject($"Pool_{typeof(T).Name}");
+            _poolContainer = containerGO.transform;
         }
 
         public T Get()
@@ -19,8 +27,8 @@ namespace Asteroids.Infrastructure
                 if (!item.gameObject.activeSelf)
                     return item;
 
-            T newItem = Object.Instantiate(_prefab);
-            newItem.transform.position = new UnityEngine.Vector3(9999f, 9999f, 0f);
+            T newItem = _container.InstantiatePrefabForComponent<T>(_prefab);
+            newItem.transform.SetParent(_poolContainer);
             newItem.gameObject.SetActive(false);
             _pool.Add(newItem);
             return newItem;
@@ -29,16 +37,19 @@ namespace Asteroids.Infrastructure
         public void ReturnAll()
         {
             foreach (var item in _pool)
-                item.gameObject.SetActive(false);
+            {
+                if (item.gameObject.activeSelf && item is IResettable poolable)
+                    poolable.Deactivate();
+            }
         }
-        
-        public List<T> GetActive()
+
+        public IReadOnlyList<T> GetActive()
         {
-            var active = new List<T>();
+            _activeCache.Clear();
             foreach (var item in _pool)
                 if (item.gameObject.activeSelf)
-                    active.Add(item);
-            return active;
+                    _activeCache.Add(item);
+            return _activeCache;
         }
     }
 }

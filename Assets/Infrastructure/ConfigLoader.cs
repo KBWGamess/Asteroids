@@ -23,8 +23,16 @@ namespace Asteroids.Infrastructure
                 return new T();
             }
 
-            string json = File.ReadAllText(fullPath);
-            return JsonConvert.DeserializeObject<T>(json);
+            try
+            {
+                string json = File.ReadAllText(fullPath);
+                return JsonConvert.DeserializeObject<T>(json);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Failed to parse config {fileName}: {e.Message}");
+                return new T();
+            }
         }
     }
 }

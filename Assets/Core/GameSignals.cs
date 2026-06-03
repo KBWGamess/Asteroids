@@ -12,8 +12,4 @@ namespace Asteroids.Core
         public int Score;
     }
     
-    public struct OnLaserFired
-    {
-        public int RemainingCharges;
-    }
 }

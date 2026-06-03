@@ -1,6 +1,15 @@
 ﻿{
   "asteroidSpeed": 3,
-  "ufoSpeed": 2,
+  "Speed": 2,
   "maxEnemiesOnMap": 10,
-  "spawnInterval": 2
+  "spawnInterval": 2,
+  "asteroidRadiusLarge": 0.7,
+  "asteroidRadiusMedium": 0.4,
+  "asteroidRadiusSmall": 0.2,
+  "Radius": 0.25,
+  "knockbackForce": 3,
+  "rewardAsteroidLarge": 20,
+  "rewardAsteroidMedium": 50,
+  "rewardAsteroidSmall": 100,
+  "reward": 200
 }

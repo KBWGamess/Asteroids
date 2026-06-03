@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using Asteroids.Player;
 using Zenject;
 
@@ -7,8 +6,8 @@ namespace Asteroids.UI
 {
     public class MobileButtonsView : MonoBehaviour
     {
-        [SerializeField] private Button _fireButton;
-        [SerializeField] private Button _laserButton;
+        [SerializeField] private HoldButton _fireButton;
+        [SerializeField] private HoldButton _laserButton;
 
         private MobileInput _mobileInput;
 
@@ -20,17 +19,21 @@ namespace Asteroids.UI
 
         private void Start()
         {
-            if (_mobileInput == null)
-            {
-                Debug.LogError("MobileInput is null!");
-                return;
-            }
+            if (_mobileInput == null) return;
 
-            var fireTrigger = _fireButton.gameObject.AddComponent<HoldButton>();
-            fireTrigger.OnHold += () => _mobileInput.SetFire(true);
-            fireTrigger.OnRelease += () => _mobileInput.SetFire(false);
+            _fireButton.OnHold += () => _mobileInput.SetFire(true);
+            _fireButton.OnRelease += () => _mobileInput.SetFire(false);
+            _laserButton.OnHold += () => _mobileInput.SetLaser(true);
+            _laserButton.OnRelease += () => _mobileInput.SetLaser(false);
+        }
 
-            _laserButton.onClick.AddListener(() => _mobileInput.SetLaser(true));
+        private void OnDestroy()
+        {
+            if (_mobileInput == null) return;
+            _fireButton.OnHold -= () => _mobileInput.SetFire(true);
+            _fireButton.OnRelease -= () => _mobileInput.SetFire(false);
+            _laserButton.OnHold -= () => _mobileInput.SetLaser(true);
+            _laserButton.OnRelease -= () => _mobileInput.SetLaser(false);
         }
     }
 }

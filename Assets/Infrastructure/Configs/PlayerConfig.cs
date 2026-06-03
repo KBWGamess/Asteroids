@@ -15,5 +15,9 @@ namespace Asteroids.Infrastructure
         public int maxLaserCharges = 3;
         public float laserRechargeTime = 5f;
         public float invincibilityDuration = 3f;
+        public float playerRadius = 0.3f;
+        public float bulletRadius = 0.05f;
+        public float laserRadius = 0.05f;
+        public float bulletLifetime = 2f;
     }
 }

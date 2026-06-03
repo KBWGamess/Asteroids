@@ -1,5 +1,5 @@
-using Asteroids.Infrastructure;
 using Asteroids.Player;
+using Asteroids.Infrastructure;
 using UnityEngine;
 using Zenject;
 
@@ -8,22 +8,24 @@ namespace Asteroids.Weapons
     public class WeaponController : ITickable
     {
         private readonly PlayerModel _player;
-        private readonly ObjectPool<BulletView> _bulletPool;
+        private readonly BulletFactory _bulletFactory;
         private readonly LaserView _laserView;
-        private readonly float _bulletSpeed;
+        private readonly IInputHandler _input;
         private float _fireCooldown;
         private readonly float _fireRate;
-        private readonly IInputHandler _input;
 
-        public WeaponController(PlayerModel player, ObjectPool<BulletView> bulletPool,
-            PlayerConfig config, LaserView laserView, IInputHandler input)
+        public WeaponController(
+            PlayerModel player,
+            BulletFactory bulletFactory,
+            LaserView laserView,
+            IInputHandler input,
+            PlayerConfig config)
         {
             _player = player;
-            _bulletPool = bulletPool;
-            _bulletSpeed = config.bulletSpeed;
-            _fireRate = config.fireRate;
+            _bulletFactory = bulletFactory;
             _laserView = laserView;
             _input = input;
+            _fireRate = config.fireRate;
         }
 
         public void Tick()
@@ -41,12 +43,9 @@ namespace Asteroids.Weapons
         private void Shoot()
         {
             _fireCooldown = _fireRate;
-            float rad = _player.Body.Rotation * Mathf.Deg2Rad;
-            Vector2 dir = new Vector2(Mathf.Sin(rad), Mathf.Cos(rad));
-
-            BulletView view = _bulletPool.Get();
-            Bullet bullet = new Bullet(_bulletSpeed, _player.Body.Position, dir);
-            view.Init(bullet);
+            float radians = _player.Body.Rotation * Mathf.Deg2Rad;
+            Vector2 direction = new Vector2(Mathf.Sin(radians), Mathf.Cos(radians));
+            _bulletFactory.Create(_player.Body.Position, direction);
         }
     }
 }

@@ -1,10 +1,13 @@
 using Firebase.Analytics;
 using UnityEngine;
+using System.Threading.Tasks;
 
 namespace Asteroids.Infrastructure
 {
-    public class FirebaseAnalyticsService
+    public class FirebaseAnalyticsService : IAnalyticsService
     {
+        private bool _isInitialized = false;
+
         public void Initialize()
         {
             Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
@@ -13,6 +16,7 @@ namespace Asteroids.Infrastructure
                 if (status == Firebase.DependencyStatus.Available)
                 {
                     FirebaseAnalytics.SetAnalyticsCollectionEnabled(true);
+                    _isInitialized = true;
                     Debug.Log("Firebase initialized");
                 }
                 else
@@ -24,19 +28,20 @@ namespace Asteroids.Infrastructure
 
         public void LogGameStart()
         {
+            if (!_isInitialized) return;
             FirebaseAnalytics.LogEvent("game_start");
         }
 
         public void LogGameOver(int score)
         {
-            FirebaseAnalytics.LogEvent("game_over",
-                new Parameter("score", score));
+            if (!_isInitialized) return;
+            FirebaseAnalytics.LogEvent("game_over", new Parameter("score", score));
         }
 
         public void LogEnemyKilled(string enemyType)
         {
-            FirebaseAnalytics.LogEvent("enemy_killed",
-                new Parameter("enemy_type", enemyType));
+            if (!_isInitialized) return;
+            FirebaseAnalytics.LogEvent("enemy_killed", new Parameter("enemy_type", enemyType));
         }
     }
 }

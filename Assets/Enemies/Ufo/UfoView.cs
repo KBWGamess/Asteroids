@@ -1,17 +1,27 @@
 ﻿using Asteroids.Core;
 using UnityEngine;
+using Asteroids.Infrastructure;
+using Zenject;
 
 namespace Asteroids.Enemies
 {
-    public class UfoView : MonoBehaviour
+    public class UFOView : MonoBehaviour, IResettable, IEnemy
     {
-        public UfoModel Model { get; private set; }
+        public UFOModel Model { get; private set; }
         private WorldBounds _bounds;
+        
+        public GameObject GameObject => gameObject;
+        public bool IsAlive => Model != null && Model.IsAlive;
 
-        public void Init(UfoModel model, WorldBounds bounds)
+        [Inject]
+        public void Construct(WorldBounds bounds)
+        {
+            _bounds = bounds;
+        }
+
+        public void SetupModel(UFOModel model)
         {
             Model = model;
-            _bounds = bounds;
             gameObject.SetActive(true);
         }
 
@@ -24,8 +34,8 @@ namespace Asteroids.Enemies
         private void Update()
         {
             if (Model == null || !Model.IsAlive) { Deactivate(); return; }
-            transform.position = Model.Body.Position;
             Model.Body.Position = _bounds.Wrap(Model.Body.Position);
+            transform.position = Model.Body.Position;
         }
     }
 }

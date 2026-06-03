@@ -1,16 +1,17 @@
+using Asteroids.Core;
 using UnityEngine;
 
 namespace Asteroids.Player
 {
     public class MouseInput : IInputHandler
     {
+        private readonly CameraProvider _cameraProvider;
         private readonly PlayerModel _player;
-        private readonly Camera _camera;
 
-        public MouseInput(PlayerModel player)
+        public MouseInput(PlayerModel player, CameraProvider cameraProvider)
         {
             _player = player;
-            _camera = Camera.main;
+            _cameraProvider = cameraProvider;
         }
 
         public float Horizontal => 0f;
@@ -20,9 +21,9 @@ namespace Asteroids.Player
 
         public float GetTargetRotation()
         {
-            Vector3 mouseWorld = _camera.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 dir = (Vector2)mouseWorld - _player.Body.Position;
-            return Mathf.Atan2(dir.x, dir.y) * Mathf.Rad2Deg;
+            Vector3 mouseWorld = _cameraProvider.Camera.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 direction = (Vector2)mouseWorld - _player.Body.Position;
+            return Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
         }
     }
 }

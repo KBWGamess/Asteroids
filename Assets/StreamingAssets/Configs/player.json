@@ -8,5 +8,9 @@
   "fireRate": 0.2,
   "maxLaserCharges": 3,
   "laserRechargeTime": 5,
-  "invincibilityDuration": 3
+  "invincibilityDuration": 3,
+  "playerRadius": 0.3,
+  "bulletRadius": 0.05,
+  "laserRadius": 0.5,
+  "bulletLifetime": 2
 }

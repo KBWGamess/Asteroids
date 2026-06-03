@@ -1,6 +1,3 @@
-using Asteroids.Physics;
-using UnityEngine;
-
 namespace Asteroids.Weapons
 {
     public class Laser
@@ -9,14 +6,9 @@ namespace Asteroids.Weapons
         private float _duration = 0.5f;
         private float _timer;
 
-        public Vector2 Origin { get; private set; }
-        public Vector2 Direction { get; private set; }
-
-        public void Fire(Vector2 origin, Vector2 direction)
+        public void Fire()
         {
             IsActive = true;
-            Origin = origin;
-            Direction = direction;
             _timer = _duration;
         }
 

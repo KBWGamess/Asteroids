@@ -1,8 +1,9 @@
 using UnityEngine;
+using Asteroids.Infrastructure;
 
 namespace Asteroids.Weapons
 {
-    public class BulletView : MonoBehaviour
+    public class BulletView : MonoBehaviour, IResettable
     {
         public Bullet Bullet { get; private set; }
 

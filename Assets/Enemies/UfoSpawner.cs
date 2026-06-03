@@ -1,23 +1,23 @@
 using Asteroids.Core;
 using Asteroids.Infrastructure;
-using Asteroids.Player;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using UnityEngine;
 
 namespace Asteroids.Enemies
 {
-    public class UfoSpawner
+    public class UFOSpawner
     {
         private readonly IEnemyFactory _factory;
-        private readonly ObjectPool<UfoView> _pool;
+        private readonly ObjectPool<UFOView> _pool;
         private readonly EnemyConfig _config;
         private readonly WorldConfig _worldConfig;
         private CancellationTokenSource _cts;
+        private UniTask _spawnTask;
 
-        public UfoSpawner(
+        public UFOSpawner(
             IEnemyFactory factory,
-            ObjectPool<UfoView> pool,
+            ObjectPool<UFOView> pool,
             EnemyConfig config,
             WorldConfig worldConfig)
         {
@@ -30,48 +30,52 @@ namespace Asteroids.Enemies
         public void StartSpawning()
         {
             _cts = new CancellationTokenSource();
-            SpawnLoop(_cts.Token).Forget();
+            _spawnTask = SpawnLoop(_cts.Token);
         }
 
         public void StopSpawning()
         {
             _cts?.Cancel();
+            _cts?.Dispose();
+            _cts = null;
         }
 
-        private async UniTaskVoid SpawnLoop(CancellationToken token)
+        private async UniTask SpawnLoop(CancellationToken token)
         {
-            await UniTask.WaitForSeconds(5f, cancellationToken: token);
-            while (!token.IsCancellationRequested)
+            try
             {
-                await UniTask.WaitForSeconds(_config.spawnInterval * 2f, cancellationToken: token);
-                SpawnUfo();
+                await UniTask.WaitForSeconds(5f, cancellationToken: token);
+                while (!token.IsCancellationRequested)
+                {
+                    await UniTask.WaitForSeconds(_config.spawnInterval * 2f, cancellationToken: token);
+                    SpawnUFO();
+                }
+            }
+            catch (System.OperationCanceledException)
+            {
+                // нормальная отмена
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"UFOSpawner error: {e}");
             }
         }
 
-        private void SpawnUfo()
+        private void SpawnUFO()
         {
-            float hw = _worldConfig.worldWidth / 2f;
-            float hh = _worldConfig.worldHeight / 2f;
+            float halfWidth = _worldConfig.worldWidth / 2f;
+            float halfHeight = _worldConfig.worldHeight / 2f;
 
             int side = Random.Range(0, 4);
             Vector2 position = side switch
             {
-                0 => new Vector2(Random.Range(-hw, hw), hh),
-                1 => new Vector2(Random.Range(-hw, hw), -hh),
-                2 => new Vector2(hw, Random.Range(-hh, hh)),
-                _ => new Vector2(-hw, Random.Range(-hh, hh))
+                0 => new Vector2(Random.Range(-halfWidth, halfWidth), halfHeight),
+                1 => new Vector2(Random.Range(-halfWidth, halfWidth), -halfHeight),
+                2 => new Vector2(halfWidth, Random.Range(-halfHeight, halfHeight)),
+                _ => new Vector2(-halfWidth, Random.Range(-halfHeight, halfHeight))
             };
 
-            _factory.CreateUfo(position, _config.ufoSpeed);
-        }
-
-        public void Tick(Vector2 playerPosition)
-        {
-            foreach (var ufo in _pool.GetActive())
-            {
-                if (ufo.Model == null || !ufo.Model.IsAlive) continue;
-                ufo.Model.Tick(Time.deltaTime, playerPosition);
-            }
+            _factory.CreateUFO(position, _config.ufoSpeed);
         }
     }
 }

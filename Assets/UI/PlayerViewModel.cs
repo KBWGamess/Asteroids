@@ -7,9 +7,9 @@ namespace Asteroids.UI
     public class PlayerViewModel
     {
         private readonly PlayerModel _player;
-        private readonly ScoreSystem _score;
+        private readonly ScoreService _score;
 
-        public PlayerViewModel(PlayerModel player, ScoreSystem score)
+        public PlayerViewModel(PlayerModel player, ScoreService score)
         {
             _player = player;
             _score = score;

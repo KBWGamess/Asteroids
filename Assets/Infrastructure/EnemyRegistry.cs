@@ -1,24 +1,24 @@
 using System.Collections.Generic;
-using UnityEngine;
+using Asteroids.Core;
 
 namespace Asteroids.Infrastructure
 {
     public class EnemyRegistry
     {
-        private readonly List<GameObject> _enemies = new List<GameObject>();
+        private readonly List<IEnemy> _enemies = new List<IEnemy>();
 
-        public void Register(GameObject enemy)
+        public void Register(IEnemy enemy)
         {
             if (!_enemies.Contains(enemy))
                 _enemies.Add(enemy);
         }
 
-        public void Unregister(GameObject enemy)
+        public void Unregister(IEnemy enemy)
         {
             _enemies.Remove(enemy);
         }
 
-        public List<GameObject> GetAll() => _enemies;
+        public IReadOnlyList<IEnemy> GetAll() => _enemies;
         public int Count => _enemies.Count;
     }
 }

@@ -14,8 +14,9 @@ namespace Asteroids.Player
         }
 
         public float Horizontal => _keyboard.Horizontal;
-        public float Vertical => _keyboard.Vertical > 0 ? _keyboard.Vertical : (Input.GetMouseButton(0) ? 1f : 0f);
-        public bool Fire => _keyboard.Fire || Input.GetMouseButton(1);
-        public bool Laser => _keyboard.Laser || Input.GetMouseButtonDown(2);
+        public float Vertical => _keyboard.Vertical > 0 ? _keyboard.Vertical : _mouse.Vertical;
+        public bool Fire => _keyboard.Fire || _mouse.Fire;
+        public bool Laser => _keyboard.Laser || _mouse.Laser;
+        public float GetTargetRotation() => _mouse.GetTargetRotation();
     }
 }

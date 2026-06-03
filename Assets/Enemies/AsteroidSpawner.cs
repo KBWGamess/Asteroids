@@ -12,6 +12,7 @@ namespace Asteroids.Enemies
         private readonly EnemyConfig _config;
         private readonly WorldConfig _worldConfig;
         private CancellationTokenSource _cts;
+        private UniTask _spawnTask;
 
         public AsteroidSpawner(
             IEnemyFactory factory,
@@ -26,29 +27,42 @@ namespace Asteroids.Enemies
         public void StartSpawning()
         {
             _cts = new CancellationTokenSource();
-            SpawnLoop(_cts.Token).Forget();
+            _spawnTask = SpawnLoop(_cts.Token);
         }
 
         public void StopSpawning()
         {
             _cts?.Cancel();
+            _cts?.Dispose();
+            _cts = null;
         }
 
-        private async UniTaskVoid SpawnLoop(CancellationToken token)
+        private async UniTask SpawnLoop(CancellationToken token)
         {
-            while (!token.IsCancellationRequested)
+            try
             {
-                await UniTask.WaitForSeconds(_config.spawnInterval, cancellationToken: token);
-                SpawnAsteroid();
+                while (!token.IsCancellationRequested)
+                {
+                    await UniTask.WaitForSeconds(_config.spawnInterval, cancellationToken: token);
+                    SpawnAsteroid();
+                }
+            }
+            catch (System.OperationCanceledException)
+            {
+                // нормальная отмена
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"AsteroidSpawner error: {e}");
             }
         }
 
         private void SpawnAsteroid()
         {
-            float hw = _worldConfig.worldWidth / 2f;
-            float hh = _worldConfig.worldHeight / 2f;
+            float halfWidth = _worldConfig.worldWidth / 2f;
+            float halfHeight = _worldConfig.worldHeight / 2f;
 
-            Vector2 position = GetSpawnPosition(hw, hh);
+            Vector2 position = GetSpawnPosition(halfWidth, halfHeight);
             Vector2 direction = new Vector2(
                 Random.Range(-1f, 1f),
                 Random.Range(-1f, 1f)
@@ -57,15 +71,15 @@ namespace Asteroids.Enemies
             _factory.CreateAsteroid(position, direction, _config.asteroidSpeed);
         }
 
-        private Vector2 GetSpawnPosition(float hw, float hh)
+        private Vector2 GetSpawnPosition(float halfWidth, float halfHeight)
         {
             int side = Random.Range(0, 4);
             return side switch
             {
-                0 => new Vector2(Random.Range(-hw, hw), hh),
-                1 => new Vector2(Random.Range(-hw, hw), -hh),
-                2 => new Vector2(hw, Random.Range(-hh, hh)),
-                _ => new Vector2(-hw, Random.Range(-hh, hh))
+                0 => new Vector2(Random.Range(-halfWidth, halfWidth), halfHeight),
+                1 => new Vector2(Random.Range(-halfWidth, halfWidth), -halfHeight),
+                2 => new Vector2(halfWidth, Random.Range(-halfHeight, halfHeight)),
+                _ => new Vector2(-halfWidth, Random.Range(-halfHeight, halfHeight))
             };
         }
     }

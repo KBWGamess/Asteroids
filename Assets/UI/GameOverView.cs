@@ -13,13 +13,13 @@ namespace Asteroids.UI
         [SerializeField] private Button _restartButton;
 
         private SignalBus _signalBus;
-        private ScoreSystem _scoreSystem;
+        private ScoreService _scoreService;
 
         [Inject]
-        public void Construct(SignalBus signalBus, Asteroids.Gameplay.ScoreSystem scoreSystem)
+        public void Construct(SignalBus signalBus, Asteroids.Gameplay.ScoreService scoreService)
         {
             _signalBus = signalBus;
-            _scoreSystem = scoreSystem;
+            _scoreService = scoreService;
         }
 
         private void Start()
@@ -32,17 +32,18 @@ namespace Asteroids.UI
         private void ShowGameOver()
         {
             _panel.SetActive(true);
-            _finalScore.text = $"Score: {_scoreSystem.Score}";
+            _finalScore.text = $"Score: {_scoreService.Score}";
         }
 
         private void Restart()
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+            UnityEngine.SceneManagement.SceneManager.LoadScene(SceneNames.Game);
         }
 
         private void OnDestroy()
         {
             _signalBus.Unsubscribe<OnPlayerDied>(ShowGameOver);
+            _restartButton.onClick.RemoveListener(Restart);
         }
     }
 }

@@ -6,7 +6,9 @@ namespace Asteroids.Weapons
 {
     public class LaserView : MonoBehaviour
     {
-        private LineRenderer _lineRenderer;
+        [SerializeField] private LineRenderer _lineRenderer;
+        [SerializeField] private Material _laserMaterial;
+        
         private Laser _laser;
         private PlayerModel _player;
 
@@ -16,25 +18,18 @@ namespace Asteroids.Weapons
             _player = player;
             _laser = new Laser();
 
-            _lineRenderer = gameObject.AddComponent<LineRenderer>();
-            _lineRenderer.startWidth = 0.1f;
-            _lineRenderer.endWidth = 0.1f;
+            _lineRenderer.startWidth = 0.05f;
+            _lineRenderer.endWidth = 0.05f;
             _lineRenderer.positionCount = 2;
             _lineRenderer.sortingOrder = -1;
+            _lineRenderer.material = _laserMaterial;
             _lineRenderer.enabled = false;
-
-            Material mat = new Material(Shader.Find("Sprites/Default"));
-            mat.color = Color.red;
-            _lineRenderer.material = mat;
         }
 
         public void Fire()
         {
             if (!_player.UseLaser()) return;
-
-            float rad = _player.Body.Rotation * Mathf.Deg2Rad;
-            Vector2 dir = new Vector2(Mathf.Sin(rad), Mathf.Cos(rad));
-            _laser.Fire(_player.Body.Position, dir);
+            _laser.Fire();
         }
 
         public bool IsActive => _laser?.IsActive ?? false;
@@ -43,8 +38,8 @@ namespace Asteroids.Weapons
         {
             get
             {
-                float rad = _player.Body.Rotation * Mathf.Deg2Rad;
-                return new Vector2(Mathf.Sin(rad), Mathf.Cos(rad));
+                float radians = _player.Body.Rotation * Mathf.Deg2Rad;
+                return new Vector2(Mathf.Sin(radians), Mathf.Cos(radians));
             }
         }
 
@@ -57,9 +52,7 @@ namespace Asteroids.Weapons
             {
                 _lineRenderer.enabled = true;
                 Vector2 origin = (Vector2)transform.position;
-                float rad = _player.Body.Rotation * Mathf.Deg2Rad;
-                Vector2 dir = new Vector2(Mathf.Sin(rad), Mathf.Cos(rad));
-                Vector2 end = origin + dir * 50f;
+                Vector2 end = origin + Direction * 50f;
                 _lineRenderer.SetPosition(0, origin);
                 _lineRenderer.SetPosition(1, end);
             }

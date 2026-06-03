@@ -6,5 +6,6 @@ namespace Asteroids.Player
         float Vertical { get; }
         bool Fire { get; }
         bool Laser { get; }
+        float GetTargetRotation();
     }
 }

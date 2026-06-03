@@ -13,5 +13,7 @@ namespace Asteroids.Player
 
         public bool Fire => Input.GetKey(KeyCode.Space);
         public bool Laser => Input.GetKeyDown(KeyCode.E);
+
+        public float GetTargetRotation() => float.NaN;
     }
 }
