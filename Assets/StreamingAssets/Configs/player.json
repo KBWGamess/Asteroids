@@ -12,5 +12,6 @@
   "playerRadius": 0.3,
   "bulletRadius": 0.05,
   "laserRadius": 0.5,
-  "bulletLifetime": 2
+  "bulletLifetime": 2,
+  "laserDuration": 0.5
 }

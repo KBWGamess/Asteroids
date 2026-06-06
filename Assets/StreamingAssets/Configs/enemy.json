@@ -11,5 +11,10 @@
   "rewardAsteroidLarge": 20,
   "rewardAsteroidMedium": 50,
   "rewardAsteroidSmall": 100,
-  "reward": 200
+  "reward": 200,
+  "ufoSpawnDelay": 5,
+  "ufoSpawnIntervalMultiplier": 2,
+  "asteroidMediumSpeed": 4,
+  "asteroidSmallSpeed": 6,
+  "asteroidSplitCount": 2
 }
