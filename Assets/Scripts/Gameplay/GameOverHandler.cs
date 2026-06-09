@@ -1,11 +1,12 @@
 using Asteroids.Core;
 using Asteroids.Enemies;
 using Asteroids.Infrastructure;
+using System;
 using Zenject;
 
 namespace Asteroids.Gameplay
 {
-    public class GameOverHandler : IInitializable
+    public class GameOverHandler : IInitializable, IDisposable
     {
         private readonly AsteroidSpawner _asteroidSpawner;
         private readonly UFOSpawner _ufoSpawner;
@@ -30,6 +31,11 @@ namespace Asteroids.Gameplay
         public void Initialize()
         {
             _signalBus.Subscribe<OnPlayerDied>(OnPlayerDied);
+        }
+
+        public void Dispose()
+        {
+            _signalBus.Unsubscribe<OnPlayerDied>(OnPlayerDied);
         }
 
         private void OnPlayerDied()

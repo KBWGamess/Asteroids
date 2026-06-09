@@ -30,16 +30,23 @@ namespace Asteroids.Gameplay
 
                 for (int i = 0; i < _config.asteroidSplitCount; i++)
                 {
-                    Vector2 direction = new Vector2(
-                        Random.Range(-1f, 1f),
-                        Random.Range(-1f, 1f)
-                    ).normalized;
-
-                    _factory.CreateAsteroid(asteroid.Model.Body.Position, direction, newSpeed, newSize);
+                    _factory.CreateAsteroid(
+                        asteroid.Model.Body.Position, 
+                        CreateRandomDirection(), 
+                        newSpeed, 
+                        newSize);
                 }
             }
 
             asteroid.Deactivate();
+        }
+
+        private Vector2 CreateRandomDirection()
+        {
+            return new Vector2(
+                Random.Range(-1f, 1f),
+                Random.Range(-1f, 1f)
+            ).normalized;
         }
     }
 }

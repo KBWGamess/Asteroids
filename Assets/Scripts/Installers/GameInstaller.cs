@@ -27,6 +27,7 @@ namespace Asteroids.Infrastructure
             Container.BindInterfacesAndSelfTo<GameAnalyticsHandler>().AsSingle();
             Container.BindInterfacesAndSelfTo<GameOverHandler>().AsSingle();
             Container.Bind<PlayerDamageHandler>().AsSingle();
+            Container.Bind<CollisionReactionHandler>().AsSingle();
         }
     }
 }

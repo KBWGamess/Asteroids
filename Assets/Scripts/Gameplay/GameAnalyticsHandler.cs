@@ -1,10 +1,11 @@
 using Asteroids.Core;
 using Asteroids.Infrastructure;
+using System;
 using Zenject;
 
 namespace Asteroids.Gameplay
 {
-    public class GameAnalyticsHandler : IInitializable
+    public class GameAnalyticsHandler : IInitializable, IDisposable
     {
         private readonly IAnalyticsService _analytics;
         private readonly SignalBus _signalBus;
@@ -25,6 +26,11 @@ namespace Asteroids.Gameplay
             _analytics.Initialize();
             _analytics.LogGameStart();
             _signalBus.Subscribe<OnPlayerDied>(OnPlayerDied);
+        }
+
+        public void Dispose()
+        {
+            _signalBus.Unsubscribe<OnPlayerDied>(OnPlayerDied);
         }
 
         private void OnPlayerDied()

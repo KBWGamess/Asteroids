@@ -13,21 +13,26 @@ namespace Asteroids.Gameplay
         private readonly ObjectPool<UFOView> _ufoPool;
         private readonly PlayerModel _player;
         private readonly WorldBounds _bounds;
+        private readonly GameStateManager _stateManager;
 
         public EnemyMovementSystem(
             ObjectPool<AsteroidView> asteroidPool,
             ObjectPool<UFOView> ufoPool,
             PlayerModel player,
-            WorldBounds bounds)
+            WorldBounds bounds,
+            GameStateManager stateManager)
         {
             _asteroidPool = asteroidPool;
             _ufoPool = ufoPool;
             _player = player;
             _bounds = bounds;
+            _stateManager = stateManager;
         }
 
         public void Tick()
         {
+            if (!_stateManager.IsPlaying) return;
+
             foreach (var asteroid in _asteroidPool.GetActive())
             {
                 if (asteroid.Model == null || !asteroid.Model.IsAlive) continue;

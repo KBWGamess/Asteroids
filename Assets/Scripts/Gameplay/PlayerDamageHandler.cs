@@ -1,4 +1,5 @@
 using Asteroids.Core;
+using Asteroids.Infrastructure;
 using Asteroids.Player;
 using UnityEngine;
 using Zenject;
@@ -9,11 +10,13 @@ namespace Asteroids.Gameplay
     {
         private readonly PlayerModel _player;
         private readonly SignalBus _signalBus;
+        private readonly float _knockbackForce;
 
-        public PlayerDamageHandler(PlayerModel player, SignalBus signalBus)
+        public PlayerDamageHandler(PlayerModel player, SignalBus signalBus, EnemyConfig config)
         {
             _player = player;
             _signalBus = signalBus;
+            _knockbackForce = config.knockbackForce;
         }
 
         public void HandleCollision(Vector2 enemyPosition)
@@ -31,7 +34,7 @@ namespace Asteroids.Gameplay
         private void ApplyKnockback(Vector2 enemyPosition)
         {
             Vector2 direction = (enemyPosition - _player.Body.Position).normalized;
-            _player.Body.SetVelocity(-direction * 3f);
+            _player.Body.SetVelocity(-direction * _knockbackForce);
         }
     }
 }

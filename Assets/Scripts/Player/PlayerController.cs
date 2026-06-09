@@ -1,3 +1,4 @@
+using Asteroids.Core;
 using UnityEngine;
 using Zenject;
 
@@ -7,15 +8,18 @@ namespace Asteroids.Player
     {
         private readonly PlayerModel _model;
         private readonly IInputHandler _input;
+        private readonly GameStateManager _stateManager;
 
-        public PlayerController(PlayerModel model, IInputHandler input)
+        public PlayerController(PlayerModel model, IInputHandler input, GameStateManager stateManager)
         {
             _model = model;
             _input = input;
+            _stateManager = stateManager;
         }
 
         public void Tick()
         {
+            if (!_stateManager.IsPlaying) return;
             if (_model.IsInvincible) return;
 
             if (_input.Horizontal != 0)

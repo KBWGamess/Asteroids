@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using Asteroids.Enemies;
 using Asteroids.Infrastructure;
-using Asteroids.Core;
 using Asteroids.Player;
 using Asteroids.Weapons;
 using UnityEngine;
 using Zenject;
+using Asteroids.Core;
 
 namespace Asteroids.Gameplay
 {
@@ -16,45 +16,43 @@ namespace Asteroids.Gameplay
         private readonly ObjectPool<AsteroidView> _asteroidPool;
         private readonly ObjectPool<BulletView> _bulletPool;
         private readonly ObjectPool<UFOView> _ufoPool;
-        private readonly RewardService _rewardService;
-        private readonly AsteroidSplitter _splitter;
         private readonly LaserView _laserView;
-        private readonly PlayerDamageHandler _damageHandler;
+        private readonly CollisionReactionHandler _reactionHandler;
         private readonly float _playerRadius;
         private readonly float _bulletRadius;
         private readonly float _ufoRadius;
         private readonly EnemyConfig _enemyConfig;
         private readonly PlayerConfig _playerConfig;
+        private readonly GameStateManager _stateManager;
 
         public EnemyCollisionHandler(
             PlayerView playerView,
             ObjectPool<AsteroidView> asteroidPool,
             ObjectPool<BulletView> bulletPool,
             ObjectPool<UFOView> ufoPool,
-            RewardService rewardService,
-            AsteroidSplitter splitter,
             LaserView laserView,
-            PlayerDamageHandler damageHandler,
+            CollisionReactionHandler reactionHandler,
             PlayerConfig playerConfig,
-            EnemyConfig enemyConfig)
+            EnemyConfig enemyConfig,
+            GameStateManager stateManager)
         {
             _playerView = playerView;
             _asteroidPool = asteroidPool;
             _bulletPool = bulletPool;
             _ufoPool = ufoPool;
-            _rewardService = rewardService;
-            _splitter = splitter;
             _laserView = laserView;
-            _damageHandler = damageHandler;
+            _reactionHandler = reactionHandler;
             _playerRadius = playerConfig.playerRadius;
             _bulletRadius = playerConfig.bulletRadius;
             _ufoRadius = enemyConfig.ufoRadius;
             _enemyConfig = enemyConfig;
             _playerConfig = playerConfig;
+            _stateManager = stateManager;
         }
 
         public void Tick()
         {
+            if (!_stateManager.IsPlaying) return;
             CheckAsteroidCollisions();
             CheckUFOCollisions();
             CheckLaserCollisions();
@@ -67,8 +65,8 @@ namespace Asteroids.Gameplay
                 a => a.Model != null && a.Model.IsAlive,
                 a => (Vector2)a.transform.position,
                 a => GetAsteroidRadius(a.Model.Size),
-                a => { _rewardService.GiveReward(a.Model.Size); _splitter.Split(a); },
-                a => _damageHandler.HandleCollision(a.Model.Body.Position)
+                a => _reactionHandler.OnBulletHitAsteroid(a),
+                a => _reactionHandler.OnPlayerHitAsteroid(a)
             );
         }
 
@@ -79,8 +77,8 @@ namespace Asteroids.Gameplay
                 u => u.Model != null && u.Model.IsAlive,
                 u => (Vector2)u.transform.position,
                 u => _ufoRadius,
-                u => { _rewardService.GiveReward(EnemyType.UFO); u.Deactivate(); },
-                u => _damageHandler.HandleCollision(u.Model.Body.Position)
+                u => _reactionHandler.OnBulletHitUFO(u),
+                u => _reactionHandler.OnPlayerHitUFO(u)
             );
         }
 
@@ -129,13 +127,13 @@ namespace Asteroids.Gameplay
                 a => a.Model != null && a.Model.IsAlive,
                 a => a.transform.position,
                 a => _playerConfig.laserRadius,
-                a => { _rewardService.GiveReward(a.Model.Size); a.Deactivate(); });
+                a => _reactionHandler.OnLaserHitAsteroid(a));
 
             CheckLaserForPool(_ufoPool.GetActive(),
                 u => u.Model != null && u.Model.IsAlive,
                 u => u.transform.position,
                 u => _ufoRadius,
-                u => { _rewardService.GiveReward(EnemyType.UFO); u.Deactivate(); });
+                u => _reactionHandler.OnLaserHitUFO(u));
         }
 
         private void CheckLaserForPool<T>(

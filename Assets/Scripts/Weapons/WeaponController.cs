@@ -1,5 +1,6 @@
-using Asteroids.Player;
+using Asteroids.Core;
 using Asteroids.Infrastructure;
+using Asteroids.Player;
 using UnityEngine;
 using Zenject;
 
@@ -11,6 +12,7 @@ namespace Asteroids.Weapons
         private readonly BulletFactory _bulletFactory;
         private readonly LaserView _laserView;
         private readonly IInputHandler _input;
+        private readonly GameStateManager _stateManager;
         private float _fireCooldown;
         private readonly float _fireRate;
 
@@ -19,17 +21,21 @@ namespace Asteroids.Weapons
             BulletFactory bulletFactory,
             LaserView laserView,
             IInputHandler input,
-            PlayerConfig config)
+            PlayerConfig config,
+            GameStateManager stateManager)
         {
             _player = player;
             _bulletFactory = bulletFactory;
             _laserView = laserView;
             _input = input;
             _fireRate = config.fireRate;
+            _stateManager = stateManager;
         }
 
         public void Tick()
         {
+            if (!_stateManager.IsPlaying) return;
+
             if (_fireCooldown > 0)
                 _fireCooldown -= Time.deltaTime;
 
