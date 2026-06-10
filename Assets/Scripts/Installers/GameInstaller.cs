@@ -1,10 +1,8 @@
 using Asteroids.Core;
 using Asteroids.Gameplay;
-using Asteroids.Infrastructure;
 using Zenject;
-using UnityEngine;
 
-namespace Asteroids.Infrastructure
+namespace Asteroids.Installers
 {
     public class GameInstaller : MonoInstaller
     {

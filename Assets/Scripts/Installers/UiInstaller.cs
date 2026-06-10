@@ -1,5 +1,4 @@
 using Asteroids.UI;
-using Asteroids.Gameplay;
 using Zenject;
 
 namespace Asteroids.Installers
